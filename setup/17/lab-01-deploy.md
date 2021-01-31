@@ -20,7 +20,7 @@ Wait until the deployment completes successfully before proceeding to the next s
 
 In the Azure Portal, navigate to the resource group you used to deploy the Synapse Analytics workspace (see [Pre-requisites for deployment](./asa-workspace-deploy.md#pre-requisites-for-deployment) for details) and start a Cloud Shell instance (see [Configure the Azure Cloud Shell](#configure-the-azure-cloud-shell) above for details).
 
-Once the Cloud Shell instance becomes available, run ```az login``` to make sure the correct account and subscription context are set:
+Once the Cloud Shell instance becomes available, **run ```az login```** to make sure the correct account and subscription context are set:
 
 ![Cloud Shell login](media/cloudshell-setup-01.png)
 
@@ -33,7 +33,7 @@ dir
 Change your current directory using
 
 ```cmd
-cd asa/hands-on-labs/setup/automation
+cd asa/setup/17/automation
 ```
 
 and then start the setup script using
@@ -50,6 +50,6 @@ Enter the name of the resource group where you deployed the Synapse Analytics wo
 
 ![Cloud Shell select resource group](media/cloudshell-setup-04.png)
 
-The setup script will now proceed to create all necesary Synapse Analytics artifacts in your environment.
+The setup script will now proceed to create all necessary Synapse Analytics artifacts in your environment.
 
 The process should take a few minutes to finish. Once it completes successfully, you have completed the deployment of the lab.

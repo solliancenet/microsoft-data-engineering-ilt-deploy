@@ -85,14 +85,14 @@ The deployment of your Synapse Analytics workspace is now complete. Next, you wi
 
 In the Azure Portal, navigate to the resource group you used to deploy the Synapse Analytics workspace (see [Pre-requisites for deployment](#pre-requisites-for-deployment) above for details) and start a Cloud Shell instance (see [Configure the Azure Cloud Shell](#configure-the-azure-cloud-shell) above for details).
 
-Once the Cloud Shell instance becomes available, run ```az login``` to make sure the correct account and subscription context are set:
+Once the Cloud Shell instance becomes available, **run ```az login```** to make sure the correct account and subscription context are set:
 
 ![Cloud Shell login](media/cloudshell-setup-01.png)
 
 Clone the content packs repository into the `asa` local folder using
 
 ```cmd
-git clone https://github.com/solliancenet/azure-synapse-analytics-ga-content-packs asa
+git clone https://github.com/solliancenet/microsoft-data-engineering-ilt-deploy asa
 ```
 
 If GIT asks for credentials, provide your GitHub username and password.
@@ -110,7 +110,7 @@ Once the repository is successfully cloned, you shoud see a result similar to th
 Change your current directory using
 
 ```cmd
-cd asa/hands-on-labs/setup/automation
+cd asa/setup/17/automation
 ```
 
 and then start the setup script using
