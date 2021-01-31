@@ -151,8 +151,8 @@
                     "location": "[variables('location')]",
                     "name": "[variables('clientIpRuleName')]",
                     "properties": {
-                        "endIpAddress": "[variables('clientIpStartValue')]",
-                        "startIpAddress": "[variables('clientIpEndValue')]"
+                        "endIpAddress": "[variables('clientIpEndValue')]",
+                        "startIpAddress": "[variables('clientIpStartValue')]"
                     },
                     "type": "firewallrules"
                 },
