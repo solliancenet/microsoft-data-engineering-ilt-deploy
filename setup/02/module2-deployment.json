@@ -53,7 +53,6 @@
         "adlsStorageAccountName": "[concat('asagadatalake', parameters('uniqueSuffix'))]",
         "defaultDataLakeStorageFilesystemName": "workspace",
         "sqlPoolName": "SQLPool01",
-        "sparkPoolName": "SparkPool01",
         "sqlServerSKU": "DW100c",
         "storageBlobDataContributorRoleID": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
         "storageBlobDataOwnerRoleID": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
@@ -401,8 +400,7 @@
             "name": "[concat(variables('workspaceName'), '/', variables('sqlPoolName'))]",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]",
-                "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'), '/bigDataPools/', variables('sparkPoolName'))]"
+                "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
             ],
             "sku": {
                 "name": "[variables('sqlServerSKU')]"
