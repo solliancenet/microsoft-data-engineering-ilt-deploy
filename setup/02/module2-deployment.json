@@ -1,0 +1,441 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "uniqueSuffix": {
+            "type": "String",
+            "metadata": {
+                "description": "Suffix added to all resource name to make them unique."
+            }
+        },
+        "administratorLoginPassword": {
+            "type": "securestring"
+        },
+        "collation": {
+            "type": "string",
+            "defaultValue": "SQL_Latin1_General_CP1_CI_AS"
+        }
+    },
+    "variables": {
+        "subscriptionId": "[subscription().subscriptionId]",
+        "resourceGroupName": "[resourceGroup().name]",
+        "serverName": "[concat('dp203sql', parameters('uniqueSuffix'))]",
+        "administratorLogin": "sqladmin",
+        "databaseName": "SourceDB",
+        "uniqueStorage": "[uniqueString(variables('subscriptionId'), variables('resourceGroupName'), variables('location'))]",
+        "storageName": "[tolower(concat('sqlva', variables('uniqueStorage')))]",
+        "uniqueRoleGuid": "[guid(resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), variables('storageBlobContributor'), resourceId('Microsoft.Sql/servers', parameters('serverName')))]",
+        "StorageBlobContributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+        "location": "[resourceGroup().location]",
+        "maxSizeBytes": 34359738368,
+        "sampleName": "AdventureWorksLT",
+        "tier": "GeneralPurpose",
+        "skuName": "GP_Gen5_2",
+        "zoneRedundant": false,
+        "licenseType": "LicenseIncluded",
+        "readScaleOut": "Disabled",
+        "numberOfReplicas": 0,
+        "minCapacity": "",
+        "autoPauseDelay": "",
+        "enableADS": false,
+        "allowAzureIps": true,
+        "databaseTags": {},
+        "serverTags": {},
+        "enableVA": false,
+        "useVAManagedIdentity": false,
+        "allowClientIp": true,
+        "clientIpRuleName": "ALL",
+        "clientIpStartValue": "0.0.0.0",
+        "clientIpEndValue": "255.255.255.255",
+        "storageAccountType": "",
+        "sqlAdministratorLogin": "asaga.sql.admin",
+        "workspaceName": "[concat('asagaworkspace', parameters('uniqueSuffix'))]",
+        "adlsStorageAccountName": "[concat('asagadatalake', parameters('uniqueSuffix'))]",
+        "defaultDataLakeStorageFilesystemName": "workspace",
+        "sqlPoolName": "SQLPool01",
+        "sparkPoolName": "SparkPool01",
+        "sqlServerSKU": "DW100c",
+        "storageBlobDataContributorRoleID": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+        "storageBlobDataOwnerRoleID": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
+        "defaultDataLakeStorageAccountUrl": "[concat('https://', variables('adlsStorageAccountName'), '.dfs.core.windows.net')]",
+        "keyVaultName": "[concat('asagakeyvault', parameters('uniqueSuffix'))]"
+    },
+    "resources": [
+        {
+            "condition": "[variables('enableVA')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "name": "[variables('storageName')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "StorageV2",
+            "resources": [
+                {
+                    "condition": "[variables('useVAManagedIdentity')]",
+                    "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+                    "apiVersion": "2018-09-01-preview",
+                    "name": "[concat(variables('storageName'), '/Microsoft.Authorization/', variables('uniqueRoleGuid') )]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', variables('serverName'))]",
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+                    ],
+                    "properties": {
+                        "roleDefinitionId": "[variables('StorageBlobContributor')]",
+                        "principalId": "[reference(resourceId('Microsoft.Sql/servers', variables('serverName')), '2018-06-01-preview', 'Full').identity.principalId]",
+                        "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+                        "principalType": "ServicePrincipal"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Sql/servers",
+            "location": "[variables('location')]",
+            "tags": "[variables('serverTags')]",
+            "name": "[variables('serverName')]",
+            "properties": {
+                "administratorLogin": "[variables('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "version": "12.0"
+            },
+            "identity": "[if(and(variables('enableVA'),variables('useVAManagedIdentity')), json('{\"type\":\"SystemAssigned\"}'), json('null'))]",
+            "resources": [
+                {
+                    "apiVersion": "2018-06-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'))]"
+                    ],
+                    "location": "[variables('location')]",
+                    "tags": "[variables('databaseTags')]",
+                    "name": "[variables('databaseName')]",
+                    "properties": {
+                        "collation": "[parameters('collation')]",
+                        "maxSizeBytes": "[variables('maxSizeBytes')]",
+                        "sampleName": "[variables('sampleName')]",
+                        "zoneRedundant": "[variables('zoneRedundant')]",
+                        "licenseType": "[variables('licenseType')]",
+                        "readScale": "[variables('readScaleOut')]",
+                        "readReplicaCount": "[variables('numberOfReplicas')]",
+                        "minCapacity": "[variables('minCapacity')]",
+                        "autoPauseDelay": "[variables('autoPauseDelay')]",
+                        "storageAccountType": "[variables('storageAccountType')]"
+                    },
+                    "sku": {
+                        "name": "[variables('skuName')]",
+                        "tier": "[variables('tier')]"
+                    },
+                    "type": "databases"
+                },
+                {
+                    "condition": "[variables('allowAzureIps')]",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'))]"
+                    ],
+                    "location": "[variables('location')]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    },
+                    "type": "firewallrules"
+                },
+                {
+                    "condition": "[variables('allowClientIp')]",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'))]"
+                    ],
+                    "location": "[variables('location')]",
+                    "name": "[variables('clientIpRuleName')]",
+                    "properties": {
+                        "endIpAddress": "[variables('clientIpStartValue')]",
+                        "startIpAddress": "[variables('clientIpEndValue')]"
+                    },
+                    "type": "firewallrules"
+                },
+                {
+                    "condition": "[variables('enableADS')]",
+                    "apiVersion": "2017-03-01-preview",
+                    "type": "securityAlertPolicies",
+                    "name": "Default",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'))]",
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'), '/databases/', variables('databaseName'))]"
+                    ],
+                    "properties": {
+                        "state": "Enabled",
+                        "disabledAlerts": [],
+                        "emailAddresses": [],
+                        "emailAccountAdmins": true
+                    }
+                },
+                {
+                    "condition": "[variables('enableVA')]",
+                    "apiVersion": "2018-06-01-preview",
+                    "type": "vulnerabilityAssessments",
+                    "name": "Default",
+                    "properties": {
+                        "storageContainerPath": "[if(variables('enableVA'), concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))).primaryEndpoints.blob, 'vulnerability-assessment'), '')]",
+                        "storageAccountAccessKey": "[if(and(variables('enableVA'),not(variables('useVAManagedIdentity'))), listKeys(variables('storageName'), '2018-02-01').keys[0].value, '')]",
+                        "recurringScans": {
+                            "isEnabled": true,
+                            "emailSubscriptionAdmins": true,
+                            "emails": []
+                        }
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'))]",
+                        "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
+                        "[concat('Microsoft.Sql/servers/', variables('serverName'), '/securityAlertPolicies/Default')]"
+                    ]
+                },
+
+                {
+                    "type": "Microsoft.KeyVault/vaults",
+                    "apiVersion": "2018-02-14",
+                    "name": "[variables('keyVaultName')]",
+                    "location": "[variables('location')]",
+                    "properties": {
+                        "tenantId": "[subscription().tenantId]",
+                        "sku": {
+                        "name": "standard",
+                        "family": "A"
+                        },
+                        "accessPolicies": []
+                    }
+                    },
+                    {
+                    "type": "Microsoft.KeyVault/vaults/secrets",
+                    "apiVersion": "2016-10-01",
+                    "name": "[concat(variables('keyVaultName'), '/SQL-USER-ASA')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+                    ],
+                    "properties": {
+                        "contentType": "text/plain",
+                        "value": "[parameters('administratorLoginPassword')]",
+                        "attributes": {
+                        "enabled": true
+                        }
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Storage/storageAccounts",
+                    "apiVersion": "2019-06-01",
+                    "name": "[variables('adlsStorageAccountName')]",
+                    "location": "[variables('location')]",
+                    "dependsOn": [],
+                    "tags": {},
+                    "sku": {
+                        "name": "Standard_RAGRS",
+                        "tier": "Standard"
+                    },
+                    "kind": "StorageV2",
+                    "properties": {
+                        "accessTier": "Hot",
+                        "supportsHttpsTrafficOnly": "true",
+                        "isHnsEnabled": "true",
+                        "largeFileSharesState": "Disabled"
+                    },
+                    "resources": [
+                        {
+                        "type": "blobServices/containers",
+                        "apiVersion": "2018-07-01",
+                        "name": "[concat('default/', variables('defaultDataLakeStorageFilesystemName'))]",
+                        "dependsOn": [
+                            "[concat('Microsoft.Storage/storageAccounts/', variables('adlsStorageAccountName'))]"
+                        ]
+                        }
+                    ]
+                    },
+                    {
+                    "type": "Microsoft.Storage/storageAccounts/blobServices",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat(variables('adlsStorageAccountName'), '/default')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('adlsStorageAccountName'))]"
+                    ],
+                    "sku": {
+                        "name": "Standard_RAGRS",
+                        "tier": "Standard"
+                    },
+                    "properties": {
+                        "cors": {
+                        "corsRules": []
+                        },
+                        "deleteRetentionPolicy": {
+                        "enabled": false
+                        }
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Storage/storageAccounts/fileServices",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat(variables('adlsStorageAccountName'), '/default')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('adlsStorageAccountName'))]"
+                    ],
+                    "sku": {
+                        "name": "Standard_RAGRS",
+                        "tier": "Standard"
+                    },
+                    "properties": {
+                        "cors": {
+                        "corsRules": []
+                        }
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Synapse/workspaces",
+                    "apiVersion": "2019-06-01-preview",
+                    "name": "[variables('workspaceName')]",
+                    "location": "[variables('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Storage/storageAccounts/', variables('adlsStorageAccountName'), '/blobServices/default/containers/', variables('defaultDataLakeStorageFilesystemName'))]"
+                    ],
+                    "identity": {
+                        "type": "SystemAssigned"
+                    },
+                    "properties": {
+                        "managedResourceGroupName": "[concat(resourceGroup().name, '-internal')]",
+                        "defaultDataLakeStorage": {
+                        "accountUrl": "[variables('defaultDataLakeStorageAccountUrl')]",
+                        "filesystem": "[variables('defaultDataLakeStorageFilesystemName')]"
+                        },
+                        "sqlAdministratorLogin": "[variables('sqlAdministratorLogin')]",
+                        "sqlAdministratorLoginPassword": "[parameters('administratorLoginPassword')]"
+                    },
+                    "resources": [
+                        {
+                        "apiVersion": "2019-06-01-preview",
+                        "dependsOn": [
+                            "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
+                        ],
+                        "location": "[variables('location')]",
+                        "name": "default",
+                        "properties": {
+                            "grantSqlControlToManagedIdentity": {
+                                "desiredState": "Enabled"
+                            }
+                        },
+                        "type": "managedIdentitySqlControlSettings"
+                        }
+                    ]
+                    },
+                    {
+                    "type": "Microsoft.Synapse/workspaces/firewallRules",
+                    "apiVersion": "2019-06-01-preview",
+                    "name": "[concat(variables('workspaceName'), '/allowAll')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
+                    ],
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "255.255.255.255"
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Synapse/workspaces/firewallRules",
+                    "apiVersion": "2019-06-01-preview",
+                    "name": "[concat(variables('workspaceName'), '/AllowAllWindowsAzureIps')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Synapse/workspaces', variables('workspaceName'))]"
+                    ],
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "0.0.0.0"
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Synapse/workspaces/integrationruntimes",
+                    "apiVersion": "2019-06-01-preview",
+                    "name": "[concat(variables('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
+                    ],
+                    "properties": {
+                        "type": "Managed",
+                        "typeProperties": {
+                        "computeProperties": {
+                            "location": "AutoResolve"
+                        }
+                        }
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Storage/storageAccounts/blobServices/containers/providers/roleAssignments",
+                    "apiVersion": "2018-09-01-preview",
+                    "name": "[concat(variables('adlsStorageAccountName'), '/default/', variables('defaultDataLakeStorageFilesystemName'), '/Microsoft.Authorization/',  guid(concat(resourceGroup().id, '/', variables('storageBlobDataOwnerRoleID'), '/', variables('workspaceName'))))]",
+                    "location": "[variables('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
+                    ],
+                    "properties": {
+                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataOwnerRoleID'))]",
+                        "principalId": "[reference(concat('Microsoft.Synapse/workspaces/', variables('workspaceName')), '2019-06-01-preview', 'Full').identity.principalId]",
+                        "principalType": "ServicePrincipal"
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Authorization/roleAssignments",
+                    "apiVersion": "2018-09-01-preview",
+                    "name": "[guid(concat(resourceGroup().id, '/', variables('storageBlobDataOwnerRoleID'), '/', variables('workspaceName'), '2'))]",
+                    "location": "[variables('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]"
+                    ],
+                    "properties": {
+                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataOwnerRoleID'))]",
+                        "principalId": "[reference(concat('Microsoft.Synapse/workspaces/', variables('workspaceName')), '2019-06-01-preview', 'Full').identity.principalId]",
+                        "principalType": "ServicePrincipal"
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Synapse/workspaces/sqlPools",
+                    "apiVersion": "2019-06-01-preview",
+                    "name": "[concat(variables('workspaceName'), '/', variables('sqlPoolName'))]",
+                    "location": "[variables('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'))]",
+                        "[concat('Microsoft.Synapse/workspaces/', variables('workspaceName'), '/bigDataPools/', variables('sparkPoolName'))]"
+                    ],
+                    "sku": {
+                        "name": "[variables('sqlServerSKU')]"
+                    },
+                    "properties": {
+                        "createMode": "Default",
+                        "collation": "SQL_Latin1_General_CP1_CI_AS"
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat(variables('adlsStorageAccountName'), '/default/staging')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('adlsStorageAccountName'), 'default')]",
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('adlsStorageAccountName'))]"
+                    ],
+                    "properties": {
+                        "publicAccess": "None"
+                    }
+                    },
+                    {
+                    "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat(variables('adlsStorageAccountName'), '/default/wwi-02')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('adlsStorageAccountName'), 'default')]",
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('adlsStorageAccountName'))]"
+                    ],
+                    "properties": {
+                        "publicAccess": "None"
+                    }
+                }
+            ]
+        }
+    ]
+}
