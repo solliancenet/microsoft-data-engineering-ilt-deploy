@@ -248,7 +248,7 @@ Perform all of the steps below from your **deployment VM**:
 
     ![A subscription is copied and pasted into the text entry.](media/select-desired-subscription.png "Select desired subscription")
 
-3. Enter the name of the resource group you created at the beginning of the environment setup (such as `synapse-in-a-day-demos`). This will make sure automation runs against the correct environment you provisioned in Azure.
+3. Enter the name of the resource group you created at the beginning of the environment setup (such as `data-engineering-synapse`). This will make sure automation runs against the correct environment you provisioned in Azure.
 
     During the execution of the automation script you may be prompted to approve installations from PS-Gallery. Please approve to proceed with the automation.
 

@@ -37,6 +37,7 @@ if($IsCloudLabs){
 
         $artifactsPath = "..\..\"
         $notebooksPath = "..\notebooks"
+        $templatesPath = "..\templates"
         $datasetsPath = "..\datasets"
         $dataflowsPath = "..\dataflows"
         $pipelinesPath = "..\pipelines"
