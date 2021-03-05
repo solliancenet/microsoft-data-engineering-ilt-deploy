@@ -265,6 +265,7 @@ if ($download)
                 Write-Information "Copying directory $($source) to $($destination)"
                 & $azCopyCommand copy $source $destination --recursive=true
         }
+}
 
 Refresh-Tokens
 
