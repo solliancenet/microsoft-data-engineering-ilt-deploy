@@ -264,23 +264,19 @@ You may encounter a few errors and warnings during the script execution. The err
 
     ![Error is displayed.](media/error-cannot-create-principal.png "Cannot create principal")
 
-2. Errors when creating the Synapse notebooks (*.ipynb files) that state `Unsupported operation: CreateOrUpdateNotebookResource` can safely be ignored.
-
-    ![Errors are displayed.](media/error-notebook-create.png "Notebook creation errors")
-
-3. Toward the end of the script, you may see the following error. If you do, it can be safely ignored:
+2. Toward the end of the script, you may see the following error. If you do, it can be safely ignored:
 
     ```PowerShell
     Starting PowerBI Artifact Provisioning
     Invoke-WebRequest : The response content cannot be parsed because the Internet Explorer engine is not available, or Internet Explorer's first-launch configuration is not complete. Specify the UseBasicParsing parameter and try again.
-    At C:\labfiles\synapse-in-a-day-deployment\artifacts\environment-setup\solliance-synapse-automation\solliance-synapse-automation. char:15
+    At C:\labfiles\data-engineering-ilt-deployment\setup\04\artifacts\environment-setup\solliance-synapse-automation\solliance-synapse-automation. char:15
     + ...   $result = Invoke-WebRequest -Uri $url -Method GET -ContentType "app ...
     +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         + CategoryInfo          : NotImplemented: (:) [Invoke-WebRequest], NotSupportedException
         + FullyQualifiedErrorId : WebCmdletIEDomNotSupportedException,Microsoft.PowerShell.Commands.InvokeWebRequestCommand
 
     Cannot index into a null array.
-    At C:\labfiles\synapse-in-a-day-deployment\artifacts\environment-setup\solliance-synapse-automation\solliance-synapse-automation. char:5
+    At C:\labfiles\data-engineering-ilt-deployment\setup\04\artifacts\environment-setup\solliance-synapse-automation\solliance-synapse-automation. char:5
     +     $homeCluster = $result.Headers["home-cluster-uri"]
     +     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
@@ -295,7 +291,7 @@ You may encounter a few errors and warnings during the script execution. The err
 
 1. Navigate to the resource group into which you deployed this environment.
 
-2. Select the **SQL pool** (`SQLPool01`).
+2. Select the **Dedicated SQL pool** (`SQLPool01`).
 
     ![The SQL pool is highlighted.](media/sql-pool.png "SQLPool01")
 
