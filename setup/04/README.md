@@ -165,7 +165,7 @@ Perform all of the steps below from your **deployment VM**:
 
     cd c:\labfiles
 
-    git clone https://github.com/ctesta-oneillmsft/asa-vtd.git synapse-in-a-day-deployment
+    git clone https://github.com/solliancenet/microsoft-data-engineering-ilt-deploy.git data-engineering-ilt-deployment
     ```
 
 * Install Azure PowerShell module
@@ -229,7 +229,7 @@ Perform all of the steps below from your **deployment VM**:
 * Change directories to the root of this repo within your local file system.
 
     ```powershell
-    cd c:\labfiles\synapse-in-a-day-deployment\artifacts\environment-setup\automation\
+    cd c:\labfiles\data-engineering-ilt-deployment\setup\04\artifacts\environment-setup\automation\
     ```
 
 * Execute `Connect-AzAccount` and sign in to your Microsoft user account when prompted.
