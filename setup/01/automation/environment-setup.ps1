@@ -82,17 +82,13 @@ $uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 
 # test for empty String or null incase adding DeploytmentId step was missed
 if (($uniqueId -eq $null) -or ($uniqueId -eq ""))
-{
-        # ask the user to enter in the suffix from the previous steps
-        $uniqueId = Read-Host "Sorry, could not find the DeploymentId tag.`n"`
-        "Please enter the suffix from your Synapse Analytics workspace,`n"`
-        "or add a DeploymentId tag and rerun this script"
+{        
+
+        Write-Information "Sorry, could not find the DeploymentId tag for $resourceGroupName`n"`
+        "Can not continue please re-run this script.`n`n"`
+        "Please add a DeploymentId tag to the resource group and rerun this script."
+        return
         
-        if (($uniqueId -eq $null) -or ($uniqueId -eq ""))
-        {
-                Write-Information "Can not continue please re-run this script."
-               return
-        }
 }
 
 $subscriptionId = (Get-AzContext).Subscription.Id
