@@ -36,16 +36,16 @@ Write-Information "Using $resourceGroupName";
 
 $resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
 $uniqueId =  $resourceGroup.Tags["DeploymentId"]
+
 # test for empty String or null incase adding DeploytmentId step was missed
 if (($uniqueId -eq $null) -or ($uniqueId -eq ""))
 {        
-        if (($uniqueId -eq $null) -or ($uniqueId -eq ""))
-        {
-                Write-Information "Sorry, could not find the DeploymentId tag for $resourceGroupName`n"`
-                "Can not continue please re-run this script.`n`n"`
-                "Please add a DeploymentId tag and rerun this script"
-               return
-        }
+
+        Write-Information "Sorry, could not find the DeploymentId tag for $resourceGroupName`n"`
+        "Can not continue please re-run this script.`n`n"`
+        "Please add a DeploymentId tag to the resource group and rerun this script."
+        return
+        
 }
 
 $location = $resourceGroup.Location
