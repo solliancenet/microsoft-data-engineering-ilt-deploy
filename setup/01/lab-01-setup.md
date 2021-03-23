@@ -24,7 +24,7 @@ To complete this lab, you will need to deploy an Azure Databricks workspace in y
    - **Workspace Name**: Enter a unique name for your workspace.
    - **Enable No Public Ip**: Set to `false`.
    - **Pricing Tier**: Ensure `premium` is selected.
-   - **Location**: Leave this at the default `[resourceGroup()location]` value.
+   - **Location**: Leave this at the default `[resourceGroup().location]` value.
 
    ![The form is configured as described.](media/databricks-arm-template.png "Deploy an Azure Databricks Workspace")
 
