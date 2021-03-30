@@ -16,6 +16,12 @@ The following requirements must be met before the deployment:
 - A password for the SQL admin account of the workspace. Make sure you save the password in a secure location (like a password manager) as you will need to use it later.
 - A GitHub account to access the GitHub repository.
 
+## Lab software requirements
+
+Install the following on your lab computer or VM:
+
+- [Azure Data Studio](https://docs.microsoft.com/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15)
+
 ## Deploy Azure resources
 
 Click the `Deploy to Azure` button below to start the deployment process.
