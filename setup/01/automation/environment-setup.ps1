@@ -79,6 +79,18 @@ if($IsCloudLabs){
 Write-Information "Using $resourceGroupName";
 
 $uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+
+# test for empty String or null incase adding DeploytmentId step was missed
+if (($uniqueId -eq $null) -or ($uniqueId -eq ""))
+{        
+
+        Write-Information "Sorry, could not find the DeploymentId tag for $resourceGroupName`n"`
+        "Can not continue please re-run this script.`n`n"`
+        "Please add a DeploymentId tag to the resource group and rerun this script."
+        return
+        
+}
+
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
 $global:logindomain = (Get-AzContext).Tenant.Id;
