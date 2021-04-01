@@ -18,13 +18,13 @@ To complete this lab, you will need to create an event hub and deploy an Azure D
 
 2. In the Create Namespace pane, enter the following information:
 
-   - **Name**: Enter a unique name, such as **databricksdemoeventhubs**. Uniqueness will be indicated by a green check mark.
-   - **Pricing tier**: Select **Basic**.
    - **Subscription**: Select the subscription group you're using for this module.
    - **Resource group**: Choose your module resource group.
+   - **Namespace name**: Enter a unique name, such as **databricksdemoeventhubs**. Uniqueness will be indicated by a green check mark.
    - **Location**: Select the location you're using for this module.
+   - **Pricing tier**: Select **Basic**.
 
-   Select **Create**.
+   Select **Review + create**, then select **Create**.
 
    ![Screenshot of the "Create Namespace" pane](media/create-namespace.png "Create namespace")
 
