@@ -42,6 +42,15 @@ This repo contains manual and automated deployment steps for lab environments us
   - [Lab setup instructions - step 1 of 2](setup/17/asa-workspace-deploy.md)
   - [Lab setup instructions - step 2 of 2](setup/17/lab-01-deploy.md)
 
+## Lab VM for students
+
+There are three modules that require a lab VM. All others only require a web browser for the students. The lab VM can be used for these modules (Modules 2, 16, and 17).
+
+This VM can be a standard Windows 10 virtual machine, and needs to be pre-loaded with the following software:
+
+1. [Azure Data Studio](https://docs.microsoft.com/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15) (for Module 2)
+2. [Power BI Desktop](https://www.microsoft.com/download/details.aspx?id=58494) (for Modules 16 & 17)
+
 ## Modules that can share the same Synapse workspace
 
 - Synapse workspace named **asagaworkspaceSUFFIX** (where SUFFIX is a unique id provided during setup):

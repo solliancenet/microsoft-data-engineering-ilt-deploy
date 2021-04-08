@@ -1,4 +1,4 @@
-# Module 7 - Lab setup
+# Module 6 - Lab setup
 
 **Microsoft Azure Account**: You will need a valid and active Azure account for the Azure labs. If you do not have one, you can sign up for a [free trial](https://azure.microsoft.com/en-us/free/)
 
