@@ -18,6 +18,8 @@ The following requirements must be met before the deployment:
 
 ## Lab software requirements
 
+> Azure Data Studio can be installed on the [lab VM](../../README.md#lab-vm-for-students) for this course.
+
 Install the following on your lab computer or VM:
 
 - [Azure Data Studio](https://docs.microsoft.com/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15)

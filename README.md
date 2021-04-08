@@ -2,6 +2,12 @@
 
 This repo contains manual and automated deployment steps for lab environments used by the Microsoft Data Engineering four-day ILT training curriculum.
 
+- [Microsoft Data Engineering four-day instructor-led training deployment](#microsoft-data-engineering-four-day-instructor-led-training-deployment)
+  - [Module directory](#module-directory)
+  - [Lab VM for students](#lab-vm-for-students)
+  - [Modules that can share the same Synapse workspace](#modules-that-can-share-the-same-synapse-workspace)
+  - [Modules that can share the same Azure Databricks workspace](#modules-that-can-share-the-same-azure-databricks-workspace)
+
 ## Module directory
 
 - Module 1 - Explore compute and storage options for data engineering workloads

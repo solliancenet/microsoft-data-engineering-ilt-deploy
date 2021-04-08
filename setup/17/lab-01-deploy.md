@@ -1,5 +1,11 @@
 # Deploy resources for Lab 01
 
+## Lab VM
+
+> Power BI Desktop can be installed on the [lab VM](../../README.md#lab-vm-for-students) for this course.
+
+Install [Power BI Desktop](https://www.microsoft.com/download/details.aspx?id=58494) on your lab computer or VM.
+
 ## Deploy services for the lab
 
 Click the `Deploy to Azure` button below to start the deployment process.
