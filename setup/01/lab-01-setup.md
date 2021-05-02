@@ -19,7 +19,7 @@ To complete this lab, you will need to deploy an Azure Databricks workspace in y
 1. Provide the required values to create your Azure Databricks workspace:
 
    - **Subscription**: Choose the Azure Subscription in which to deploy the workspace.
-   - **Resource Group**: Leave at Create new and provide a name for the new resource group.
+   - **Resource Group**: Leave at Create new and provide a name for the new resource group. **Note**: If you are using a hosted lab environment, you may not be allowed to create a new resource group. In this case, select the existing resource group provided to you.
    - **Region**: Select a location near you for deployment. For the list of regions supported by Azure Databricks, see [Azure services available by region](https://azure.microsoft.com/regions/services/).
    - **Workspace Name**: Enter a unique name for your workspace.
    - **Enable No Public Ip**: Set to `false`.
