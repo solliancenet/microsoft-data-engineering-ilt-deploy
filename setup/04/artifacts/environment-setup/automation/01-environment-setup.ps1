@@ -42,6 +42,7 @@ if($IsCloudLabs){
         $dataflowsPath = "..\dataflows"
         $pipelinesPath = "..\pipelines"
         $sqlScriptsPath = "..\sql"
+	$sqlScriptsArtifactsPath = "..\sql\workspace-artifacts"
 } else {
         if(Get-Module -Name solliance-synapse-automation){
                 Remove-Module solliance-synapse-automation
@@ -78,6 +79,7 @@ if($IsCloudLabs){
         $dataflowsPath = "..\dataflows"
         $pipelinesPath = "..\pipelines"
         $sqlScriptsPath = "..\sql"
+	$sqlScriptsArtifactsPath = "..\sql\workspace-artifacts"
 }
 
 Write-Information "Using $resourceGroupName";
@@ -537,10 +539,10 @@ foreach ($pipeline in $workloadPipelines.Keys) {
 Write-Information "Create SQL scripts"
 
 $sqlScripts = [ordered]@{
-        "Lab 05 - Exercise 3 - Column Level Security" = "$artifactsPath\environment-setup\sql\workspace-artifacts"
-        "Lab 05 - Exercise 3 - Dynamic Data Masking" = "$artifactsPath\environment-setup\sql\workspace-artifacts"
-        "Lab 05 - Exercise 3 - Row Level Security" = "$artifactsPath\environment-setup\sql\workspace-artifacts"
-        "Activity 03 - Data Warehouse Optimization" = "$artifactsPath\environment-setup\sql\workspace-artifacts"
+        "Lab 05 - Exercise 3 - Column Level Security" = $sqlScriptsArtifactsPath
+        "Lab 05 - Exercise 3 - Dynamic Data Masking" = $sqlScriptsArtifactsPath
+        "Lab 05 - Exercise 3 - Row Level Security" = $sqlScriptsArtifactsPath
+        "Activity 03 - Data Warehouse Optimization" = $sqlScriptsArtifactsPath
 }
 
 foreach ($sqlScriptName in $sqlScripts.Keys) {
