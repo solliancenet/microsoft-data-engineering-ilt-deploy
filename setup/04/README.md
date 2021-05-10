@@ -85,7 +85,7 @@ We highly recommend executing the PowerShell scripts on an Azure Virtual Machine
    | Field                          | Value                                              |
    | ------------------------------ | ------------------------------------------         |
    | Subscription                   | _select the appropriate subscription_              |
-   | Resource group                 | _select `synapse-in-a-day-demos`_                      |
+   | Resource group                 | _select `data-engineering-synapse` (the name of the resource group you created in the previous task)_                      |
    | Virtual machine name           | _`synapse-lab-setup-vm` (or unique name if not available)_      |
    | Region                         | _select the resource group's location_             |
    | Availability options           | _select `No infrastructure redundancy required`_   |
