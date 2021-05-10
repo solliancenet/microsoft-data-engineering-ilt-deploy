@@ -219,7 +219,36 @@ else
 
 $download = $true;
 
-$publicDataUrl = "https://solliancepublicdata.blob.core.windows.net/"
+#$publicDataUrl = "https://solliancepublicdata.blob.core.windows.net/"
+
+$publicDataUrl= $null 
+$rgLocation = (Get-AzResourceGroup -Name $resourceGroupName).Location
+          
+if($rgLocation -like "eastus")
+{
+  $publicDataUrl = "https://l400eastus.blob.core.windows.net/"
+}
+elseif($rgLocation -like "northeurope")
+{
+   $publicDataUrl = "https://l400northeurope.blob.core.windows.net/"
+}
+elseif($rgLocation -like "westeurope")
+{
+  $publicDataUrl = "https://l400westeurope.blob.core.windows.net/"
+}
+elseif($rgLocation -like "southeastasia")
+{
+  $publicDataUrl = "https://l400southeastasia.blob.core.windows.net/"
+}
+elseif($rgLocation -like "westus2")
+{
+  $publicDataUrl = "https://l400westus2.blob.core.windows.net/"
+}
+else   #Check for southcentralus
+{
+  $publicDataUrl = "https://l400southcentralus.blob.core.windows.net/"
+}
+
 $dataLakeStorageUrl = "https://"+ $dataLakeAccountName + ".dfs.core.windows.net/"
 $dataLakeStorageBlobUrl = "https://"+ $dataLakeAccountName + ".blob.core.windows.net/"
 $dataLakeStorageAccountKey = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $dataLakeAccountName)[0].Value
