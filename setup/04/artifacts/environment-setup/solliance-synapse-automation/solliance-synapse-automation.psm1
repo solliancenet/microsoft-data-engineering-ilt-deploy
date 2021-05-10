@@ -1134,11 +1134,7 @@ function Create-SQLScript {
 
     [parameter(Mandatory=$true)]
     [String]
-    $ScriptFileName,
-
-    [parameter(Mandatory=$false)]
-    [Hashtable]
-    $Parameters = $null
+    $ScriptFileName
     )
 
     $item = Get-Content -Raw -Path "$($TemplatesPath)/sql_script.json"
@@ -1146,15 +1142,9 @@ function Create-SQLScript {
     $jsonItem = ConvertFrom-Json $item
 
     $query = Get-Content -Raw -Path $ScriptFileName -Encoding utf8
-    if ($Parameters -ne $null) {
-        foreach ($key in $Parameters.Keys) {
-            $query = $query.Replace("#$($key)#", $Parameters[$key])
-        }
-    }
+    $query = ConvertFrom-Json (ConvertTo-Json $query)
 
-    #$query = ConvertFrom-Json (ConvertTo-Json $query)
-
-    $jsonItem.properties.content.query = $query
+    $jsonItem.properties.content.query = $query.value
     $item = ConvertTo-Json $jsonItem -Depth 100
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/sqlscripts/$($Name)?api-version=2019-06-01-preview"
@@ -1164,6 +1154,7 @@ function Create-SQLScript {
     
     return $result
 }
+
 
 function Get-SparkPool {
 
