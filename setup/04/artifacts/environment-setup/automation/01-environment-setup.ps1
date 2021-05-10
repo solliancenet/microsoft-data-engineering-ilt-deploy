@@ -42,7 +42,6 @@ if($IsCloudLabs){
         $dataflowsPath = "..\dataflows"
         $pipelinesPath = "..\pipelines"
         $sqlScriptsPath = "..\sql"
-	$sqlScriptsArtifactsPath = "..\sql\workspace-artifacts"
 } else {
         if(Get-Module -Name solliance-synapse-automation){
                 Remove-Module solliance-synapse-automation
@@ -79,7 +78,6 @@ if($IsCloudLabs){
         $dataflowsPath = "..\dataflows"
         $pipelinesPath = "..\pipelines"
         $sqlScriptsPath = "..\sql"
-	$sqlScriptsArtifactsPath = "..\sql\workspace-artifacts"
 }
 
 Write-Information "Using $resourceGroupName";
@@ -115,10 +113,10 @@ $global:tokenTimes = [ordered]@{
         PowerBI = (Get-Date -Year 1)
 }
 
-Write-Information "Assign Ownership to Proctors on Synapse Workspace"
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
-Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
+#Write-Information "Assign Ownership to Proctors on Synapse Workspace"
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "6e4bf58a-b8e1-4cc3-bbf9-d73143322b78" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Workspace Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "7af0c69a-a548-47d6-aea3-d00e69bd83aa" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # SQL Admin
+#Assign-SynapseRole -WorkspaceName $workspaceName -RoleId "c3a6d2f1-a26f-4810-9b0f-591308d5cbf1" -PrincipalId "37548b2e-e5ab-4d2b-b0da-4d812f56c30e"  # Apache Spark Admin
 
 #add the current user...
 $user = Get-AzADUser -UserPrincipalName $userName
@@ -539,15 +537,15 @@ foreach ($pipeline in $workloadPipelines.Keys) {
 Write-Information "Create SQL scripts"
 
 $sqlScripts = [ordered]@{
-        "Lab 05 - Exercise 3 - Column Level Security" = $sqlScriptsArtifactsPath
-        "Lab 05 - Exercise 3 - Dynamic Data Masking" = $sqlScriptsArtifactsPath
-        "Lab 05 - Exercise 3 - Row Level Security" = $sqlScriptsArtifactsPath
-        "Activity 03 - Data Warehouse Optimization" = $sqlScriptsArtifactsPath
+        "Lab 05 - Exercise 3 - Column Level Security" = "Lab 05 - Exercise 3 - Column Level Security"
+        "Lab 05 - Exercise 3 - Dynamic Data Masking" = "Lab 05 - Exercise 3 - Dynamic Data Masking"
+        "Lab 05 - Exercise 3 - Row Level Security" = "Lab 05 - Exercise 3 - Row Level Security"
+        "Activity 03 - Data Warehouse Optimization" = "Activity 03 - Data Warehouse Optimization"
 }
 
 foreach ($sqlScriptName in $sqlScripts.Keys) {
         
-        $sqlScriptFileName = "$($sqlScripts[$sqlScriptName])\$($sqlScriptName).sql"
+        $sqlScriptFileName = "$sqlScriptName.sql"
         Write-Information "Creating SQL script $($sqlScriptName) from $($sqlScriptFileName)"
         
         $result = Create-SQLScript -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $sqlScriptName -ScriptFileName $sqlScriptFileName
@@ -676,3 +674,11 @@ Update-AzCosmosDBSqlContainer -ResourceGroupName $resourceGroupName `
         -Name $cosmosDbContainer -Throughput 400 `
         -PartitionKeyKind $container.Resource.PartitionKey.Kind `
         -PartitionKeyPath $container.Resource.PartitionKey.Paths
+
+<#Write-Information "Pausing the $($sqlPoolName) SQL pool"
+
+$result = Get-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName
+if ($result.properties.status -eq "Online") {
+Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action pause
+Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Paused
+} #>
