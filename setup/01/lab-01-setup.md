@@ -36,7 +36,7 @@ To complete this lab, you will need to deploy an Azure Databricks workspace in y
 
 1. When your Azure Databricks workspace creation is complete, select the link to go to the resource.
 1. Select **Launch Workspace** to open your Databricks workspace in a new tab.
-1. In the left-hand menu of your Databricks workspace, select **Clusters**.
+1. In the left-hand menu of your Databricks workspace, select **Compute**.
 1. Select **Create Cluster** to add a new cluster.
 
     ![The create cluster page](media/create-a-cluster.png)
