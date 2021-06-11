@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -39,6 +39,17 @@
     "keyVaultName": "[concat('asagakeyvault', parameters('uniqueSuffix'))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.Resources/tags",
+      "name": "default",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [],
+      "properties": {
+          "tags": {
+              "DeploymentId": "[parameters('uniqueSuffix')]"
+          }
+      }
+    },
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2018-02-14",
