@@ -12,8 +12,7 @@ This repo contains manual and automated deployment steps for lab environments us
 
 - Module 1 - Explore compute and storage options for data engineering workloads
   - [Lab 01 setup instructions](setup/01/lab-01-setup.md)
-  - [Lab 02 setup instructions - step 1 of 2](setup/01/asa-workspace-deploy.md)
-  - [Lab 02 setup instructions - step 2 of 2](setup/01/lab-02-deploy.md)
+  - [Lab 02 setup instructions](setup/01/asa-workspace-deploy.md)
 - Module 2 - Design and Implement the serving layer
   - [Lab setup instructions](setup/02/README.md)
 - Module 3 - Data engineering considerations for source files
